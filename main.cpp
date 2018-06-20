@@ -15,12 +15,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define LEARNRATE 0.25
-#define LEARNLOOPS 50000
+#define LEARNRATE 0.05
+#define LEARNLOOPS 5000
 
 float weight[] = {0.15, 0.20, 0.25, 0.30, 0.40, 0.45, 0.50, 0.55};
 float bias_a = 0.35;
 float bias_b = 0.60;
+float net_err_per[1];
 
 float sigmoid(float sigme) {
   float s = 1.0 / (1.0 + exp(sigme * -1));
@@ -44,7 +45,6 @@ struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
   // learning rate
   // float lr = 0.5;
   // network error declare
-  float net_err_per[2];
   // first pass
   float out[2];
   float o_out[2];
@@ -57,8 +57,8 @@ struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
     // printf("OUT1: %f OUT2: %f OUTo1: %f OUTo2: %f\n", out[1], out[2],
     // o_out[1], o_out[2]);
     // calculate the network error
-    net_err_per[1] = 0.5 * pow((tt_a - o_out[1]), 2);
-    net_err_per[2] = 0.5 * pow((tt_b - o_out[2]), 2);
+    net_err_per[0] = 0.5 * pow((tt_a - o_out[1]), 2);
+    net_err_per[1] = 0.5 * pow((tt_b - o_out[2]), 2);
     // target - output
     float tar_less_out[2];
     tar_less_out[1] = (o_out[1] - tt_a);
@@ -108,10 +108,10 @@ struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
     weight[6] = nweight[6];
     weight[7] = nweight[7];
   }
-  //printf("Network Error: A: %f  -  B: %f \n", net_err_per[1], net_err_per[2]);
   //printf("Output: A:%f  -  B: %f\n", o_out[1], o_out[2]);
   tuple = {o_out[1], o_out[2]};
   // reset the weights for next rounds!
+  /*
   weight[0] = 0.15;
   weight[1] = 0.20;
   weight[2] = 0.25;
@@ -120,6 +120,7 @@ struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
   weight[5] = 0.45;
   weight[6] = 0.50;
   weight[7] = 0.55;
+  */
   return(tuple);
 }
 
@@ -144,6 +145,7 @@ int main() {
   out_o_a = tuple.out_o_a;
   out_o_b = tuple.out_o_b;
   printf("%f %f\n", out_o_a, out_o_b);
+  printf("Network Error: A: %f  -  B: %f \n", net_err_per[0], net_err_per[1]);
   return(0);
 }
 
