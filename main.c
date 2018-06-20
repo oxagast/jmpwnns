@@ -24,6 +24,7 @@ float bias_b = 0.60;
 float net_err_per[1];
 
 float sigmoid(float sigme) {
+  //sigmoidal squashing function
   float s = 1.0 / (1.0 + exp(sigme * -1));
   return (s);
 }
@@ -42,9 +43,6 @@ struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
   struct Tuple tuple;
   printf("Trying for: %f, %f\n", tt_a, tt_b);
   printf("Inputs to neurons are: %f, %f\n", tf_a, tf_b);
-  // learning rate
-  // float lr = 0.5;
-  // network error declare
   // first pass
   float out[2];
   float o_out[2];
@@ -108,26 +106,13 @@ struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
     weight[6] = nweight[6];
     weight[7] = nweight[7];
   }
-  //printf("Output: A:%f  -  B: %f\n", o_out[1], o_out[2]);
   tuple = {o_out[1], o_out[2]};
-  // reset the weights for next rounds!
-  /*
-  weight[0] = 0.15;
-  weight[1] = 0.20;
-  weight[2] = 0.25;
-  weight[3] = 0.30;
-  weight[4] = 0.40;
-  weight[5] = 0.45;
-  weight[6] = 0.50;
-  weight[7] = 0.55;
-  */
   return(tuple);
 }
 
-int main() {
+int train() {
   float out_o_a, out_o_b;
   struct Tuple tuple;
-
   // lets try to teach it XOR!!
   tuple = network(0,0,0,0);
   out_o_a = tuple.out_o_a;
@@ -145,6 +130,13 @@ int main() {
   out_o_a = tuple.out_o_a;
   out_o_b = tuple.out_o_b;
   printf("Final: %f %f\n", out_o_a, out_o_b);
+  return(0);
+}
+int main() {
+  int ret = train(); 
+  printf("Final Weights:\nw1 %f w2 %f w3 %f w4 %f\nw5 %f w6 %f w7 %f w8 %f\n", 
+		  weight[0], weight[1], weight[2], weight[3], weight[4],
+		  weight[5], weight[6], weight[7]);
   printf("Network Error: A: %f  -  B: %f \n", net_err_per[0], net_err_per[1]);
   return(0);
 }
