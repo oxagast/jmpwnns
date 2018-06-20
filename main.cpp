@@ -132,19 +132,19 @@ int main() {
   tuple = network(0,0,0,0);
   out_o_a = tuple.out_o_a;
   out_o_b = tuple.out_o_b;
-  printf("%f %f\n", out_o_a, out_o_b);
+  printf("Final: %f %f\n", out_o_a, out_o_b);
   tuple = network(0,1,1,1);
   out_o_a = tuple.out_o_a;
   out_o_b = tuple.out_o_b;
-  printf("%f %f\n", out_o_a, out_o_b);
+  printf("Final: %f %f\n", out_o_a, out_o_b);
   tuple = network(1,0,1,1);
   out_o_a = tuple.out_o_a;
   out_o_b = tuple.out_o_b;
-  printf("%f %f\n", out_o_a, out_o_b);
+  printf("Final: %f %f\n", out_o_a, out_o_b);
   tuple = network(1,1,0,0);
   out_o_a = tuple.out_o_a;
   out_o_b = tuple.out_o_b;
-  printf("%f %f\n", out_o_a, out_o_b);
+  printf("Final: %f %f\n", out_o_a, out_o_b);
   printf("Network Error: A: %f  -  B: %f \n", net_err_per[0], net_err_per[1]);
   return(0);
 }
