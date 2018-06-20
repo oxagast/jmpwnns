@@ -16,11 +16,9 @@
 #include <stdlib.h>
 
 #define LEARNRATE 0.25
-#define LEARNLOOPS 10000
+#define LEARNLOOPS 50000
 
 float weight[] = {0.15, 0.20, 0.25, 0.30, 0.40, 0.45, 0.50, 0.55};
-float input[] = {0, 1};
-float tryfor[] = {0, 0};
 float bias_a = 0.35;
 float bias_b = 0.60;
 
@@ -41,11 +39,10 @@ struct Tuple {
 
 struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
   struct Tuple tuple;
-  printf("Trying for: %f, %f\n", tryfor[0], tryfor[1]);
+  printf("Trying for: %f, %f\n", tt_a, tt_b);
   printf("Inputs to neurons are: %f, %f\n", tf_a, tf_b);
   // learning rate
   // float lr = 0.5;
-  float backout;
   // network error declare
   float net_err_per[2];
   // first pass
@@ -99,11 +96,13 @@ struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
     // for each weight
     // wish i could smoke a joint
     float outh_a = out[1] * (1 - out[1]);
-    backout = out_h * outh_a * tf_a;
-    weight[0] = weight[0] - LEARNRATE * backout;
-    weight[1] = weight[1] - LEARNRATE * backout;
-    weight[2] = weight[2] - LEARNRATE * backout;
-    weight[3] = weight[3] - LEARNRATE * backout;
+    float outh_b = out[2] * (1 - out[2]);
+    float backout_a = out_h * outh_a * tf_a;
+    float backout_b = out_h * outh_b * tf_b;
+    weight[0] = weight[0] - LEARNRATE * backout_a;
+    weight[1] = weight[1] - LEARNRATE * backout_a;
+    weight[2] = weight[2] - LEARNRATE * backout_b;
+    weight[3] = weight[3] - LEARNRATE * backout_b;
     weight[4] = nweight[4];
     weight[5] = nweight[5];
     weight[6] = nweight[6];
@@ -112,14 +111,23 @@ struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
   //printf("Network Error: A: %f  -  B: %f \n", net_err_per[1], net_err_per[2]);
   //printf("Output: A:%f  -  B: %f\n", o_out[1], o_out[2]);
   tuple = {o_out[1], o_out[2]};
+  // reset the weights for next rounds!
+  weight[0] = 0.15;
+  weight[1] = 0.20;
+  weight[2] = 0.25;
+  weight[3] = 0.30;
+  weight[4] = 0.40;
+  weight[5] = 0.45;
+  weight[6] = 0.50;
+  weight[7] = 0.55;
   return(tuple);
 }
 
 int main() {
   float out_o_a, out_o_b;
   struct Tuple tuple;
-  // lets try to teach it XOR!!
 
+  // lets try to teach it XOR!!
   tuple = network(0,0,0,0);
   out_o_a = tuple.out_o_a;
   out_o_b = tuple.out_o_b;
@@ -134,7 +142,7 @@ int main() {
   printf("%f %f\n", out_o_a, out_o_b);
   tuple = network(1,1,0,0);
   out_o_a = tuple.out_o_a;
-  out_o_a = tuple.out_o_a;
+  out_o_b = tuple.out_o_b;
   printf("%f %f\n", out_o_a, out_o_b);
   return(0);
 }
