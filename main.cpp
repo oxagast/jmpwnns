@@ -19,8 +19,8 @@
 #define LEARNLOOPS 10000
 
 float weight[] = {0.15, 0.20, 0.25, 0.30, 0.40, 0.45, 0.50, 0.55};
-float input[] = {0.05, 0.10};
-float tryfor[] = {0.89, 0.52};
+float input[] = {0, 1};
+float tryfor[] = {0, 0};
 float bias_a = 0.35;
 float bias_b = 0.60;
 
@@ -35,9 +35,14 @@ float calc_it(float ina, float inb, float f_weight, float s_weight,
   return (tni);
 }
 
-int main(int argc, char *argv[]) {
+struct Tuple {
+  float out_o_a, out_o_b;
+};
+
+struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
+  struct Tuple tuple;
   printf("Trying for: %f, %f\n", tryfor[0], tryfor[1]);
-  printf("Inputs to neurons are: %f, %f\n", input[0], input[1]);
+  printf("Inputs to neurons are: %f, %f\n", tf_a, tf_b);
   // learning rate
   // float lr = 0.5;
   float backout;
@@ -47,20 +52,20 @@ int main(int argc, char *argv[]) {
   float out[2];
   float o_out[2];
   for (int ll; ll < LEARNLOOPS; ll++) { // learn loop
-    out[1] = sigmoid(calc_it(input[0], input[1], weight[0], weight[1], bias_a));
-    out[2] = sigmoid(calc_it(input[0], input[1], weight[2], weight[3], bias_a));
+    out[1] = sigmoid(calc_it(tf_a, tf_b, weight[0], weight[1], bias_a));
+    out[2] = sigmoid(calc_it(tf_a, tf_b, weight[2], weight[3], bias_a));
     // calculate out back through
     o_out[1] = sigmoid(calc_it(out[1], out[2], weight[4], weight[5], bias_b));
     o_out[2] = sigmoid(calc_it(out[1], out[2], weight[6], weight[7], bias_b));
     // printf("OUT1: %f OUT2: %f OUTo1: %f OUTo2: %f\n", out[1], out[2],
     // o_out[1], o_out[2]);
     // calculate the network error
-    net_err_per[1] = 0.5 * pow((tryfor[0] - o_out[1]), 2);
-    net_err_per[2] = 0.5 * pow((tryfor[1] - o_out[2]), 2);
+    net_err_per[1] = 0.5 * pow((tt_a - o_out[1]), 2);
+    net_err_per[2] = 0.5 * pow((tt_b - o_out[2]), 2);
     // target - output
     float tar_less_out[2];
-    tar_less_out[1] = (o_out[1] - tryfor[0]);
-    tar_less_out[2] = (o_out[2] - tryfor[1]);
+    tar_less_out[1] = (o_out[1] - tt_a);
+    tar_less_out[2] = (o_out[2] - tt_b);
     float der[2];
     // derrivitive
     der[1] = o_out[1] * (1 - o_out[1]);
@@ -94,7 +99,7 @@ int main(int argc, char *argv[]) {
     // for each weight
     // wish i could smoke a joint
     float outh_a = out[1] * (1 - out[1]);
-    backout = out_h * outh_a * input[0];
+    backout = out_h * outh_a * tf_a;
     weight[0] = weight[0] - LEARNRATE * backout;
     weight[1] = weight[1] - LEARNRATE * backout;
     weight[2] = weight[2] - LEARNRATE * backout;
@@ -104,6 +109,33 @@ int main(int argc, char *argv[]) {
     weight[6] = nweight[6];
     weight[7] = nweight[7];
   }
-  printf("Network Error: A: %f  -  B: %f \n", net_err_per[1], net_err_per[2]);
-  printf("Output: A:%f  -  B: %f\n", o_out[1], o_out[2]);
+  //printf("Network Error: A: %f  -  B: %f \n", net_err_per[1], net_err_per[2]);
+  //printf("Output: A:%f  -  B: %f\n", o_out[1], o_out[2]);
+  tuple = {o_out[1], o_out[2]};
+  return(tuple);
 }
+
+int main() {
+  float out_o_a, out_o_b;
+  struct Tuple tuple;
+  // lets try to teach it XOR!!
+
+  tuple = network(0,0,0,0);
+  out_o_a = tuple.out_o_a;
+  out_o_b = tuple.out_o_b;
+  printf("%f %f\n", out_o_a, out_o_b);
+  tuple = network(0,1,1,1);
+  out_o_a = tuple.out_o_a;
+  out_o_b = tuple.out_o_b;
+  printf("%f %f\n", out_o_a, out_o_b);
+  tuple = network(1,0,1,1);
+  out_o_a = tuple.out_o_a;
+  out_o_b = tuple.out_o_b;
+  printf("%f %f\n", out_o_a, out_o_b);
+  tuple = network(1,1,0,0);
+  out_o_a = tuple.out_o_a;
+  out_o_a = tuple.out_o_a;
+  printf("%f %f\n", out_o_a, out_o_b);
+  return(0);
+}
+
