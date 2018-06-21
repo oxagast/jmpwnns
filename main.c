@@ -114,6 +114,7 @@ int train() {
   float out_o_a, out_o_b;
   struct Tuple tuple;
   // lets try to teach it XOR!!
+  for(int trainloop;trainloop < 10; trainloop++) {
   tuple = network(0,0,0,0);
   out_o_a = tuple.out_o_a;
   out_o_b = tuple.out_o_b;
@@ -130,6 +131,7 @@ int train() {
   out_o_a = tuple.out_o_a;
   out_o_b = tuple.out_o_b;
   printf("Final: %f %f\n", out_o_a, out_o_b);
+  }
   return(0);
 }
 int main() {
