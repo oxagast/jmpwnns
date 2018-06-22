@@ -9,11 +9,12 @@
 //  (  O )  (/    ( (_ /    \___ \ )(
 //   \__(_/\_\_/\_/\___\_/\_(____/(__)
 //
-//  gcc main.cpp -o main -lm
+//  g++ main.cpp -o main -lm
 
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define LEARNRATE 0.05
 #define LEARNLOOPS 5000
@@ -41,7 +42,7 @@ struct Tuple {
 
 struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
   struct Tuple tuple;
-  printf("Trying for: %f, %f\n", tt_a, tt_b);
+  printf("Trying for: %0.0f %0.0f\n", tt_a, tt_b);
   printf("Inputs to neurons are: %f, %f\n", tf_a, tf_b);
   // first pass
   float out[2];
@@ -110,36 +111,51 @@ struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
   return(tuple);
 }
 
-int train() {
-  float out_o_a, out_o_b;
-  struct Tuple tuple;
-  // lets try to teach it XOR!!
-  for(int trainloop;trainloop < 10; trainloop++) {
-  tuple = network(0,0,0,0);
-  out_o_a = tuple.out_o_a;
-  out_o_b = tuple.out_o_b;
-  printf("Final: %f %f\n", out_o_a, out_o_b);
-  tuple = network(0,1,1,1);
-  out_o_a = tuple.out_o_a;
-  out_o_b = tuple.out_o_b;
-  printf("Final: %f %f\n", out_o_a, out_o_b);
-  tuple = network(1,0,1,1);
-  out_o_a = tuple.out_o_a;
-  out_o_b = tuple.out_o_b;
-  printf("Final: %f %f\n", out_o_a, out_o_b);
-  tuple = network(1,1,0,0);
-  out_o_a = tuple.out_o_a;
-  out_o_b = tuple.out_o_b;
-  printf("Final: %f %f\n", out_o_a, out_o_b);
+const char* getfield(char* line, int num) {
+  const char* tok;
+  for (tok = strtok(line, ",");
+    tok && *tok;
+    tok = strtok(NULL, ",\n")) {
+    if (!--num) { 
+      return(tok);
+    }
   }
-  return(0);
-}
+  return(NULL);
+} 
+
+int train() {
+  printf("Training...\n");
+  struct Tuple tuple;
+  for(int train; train < 10; train++) {
+  FILE *stream = fopen("./testdata/blah.csv", "r");
+  char line[1024];
+  float in_a, in_b, out_a, out_b;
+  char *tmp;
+  while (fgets(line, 1024, stream)) {
+    // NOTE strtok clobbers tmp
+    tmp = strdup(line);
+    in_a = atof(getfield(tmp, 3));
+    free(tmp);
+    tmp = strdup(line);
+    in_b = atof(getfield(tmp, 4));
+    free(tmp);
+    tmp = strdup(line);
+    out_a = atof(getfield(tmp, 8));
+    free(tmp);
+    tmp = strdup(line);
+    out_b = atof(getfield(tmp, 9));
+    free(tmp);
+    tuple = network(in_a, in_b, out_a, out_b);
+    printf("%0.2f %0.2f %0.0f %0.0f\n", in_a, in_b, out_a, out_b);
+    }
+  }
+}	
+
 int main() {
   int ret = train(); 
   printf("Final Weights:\nw1 %f w2 %f w3 %f w4 %f\nw5 %f w6 %f w7 %f w8 %f\n", 
 		  weight[0], weight[1], weight[2], weight[3], weight[4],
 		  weight[5], weight[6], weight[7]);
   printf("Network Error: A: %f  -  B: %f \n", net_err_per[0], net_err_per[1]);
-  return(0);
+  return(ret);
 }
-
