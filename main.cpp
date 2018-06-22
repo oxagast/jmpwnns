@@ -17,7 +17,10 @@
 #include <string.h>
 
 #define LEARNRATE 0.05
-#define LEARNLOOPS 5000
+#define LEARNLOOPS 200
+
+void train_csv();
+void train_xor();
 
 float weight[] = {0.15, 0.20, 0.25, 0.30, 0.40, 0.45, 0.50, 0.55};
 float bias_a = 0.35;
@@ -41,9 +44,9 @@ struct Tuple {
 };
 
 struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
-  struct Tuple tuple;
+  struct Tuple n;
   printf("Trying for: %0.0f %0.0f\n", tt_a, tt_b);
-  printf("Inputs to neurons are: %f, %f\n", tf_a, tf_b);
+  printf("Inputs to neurons are: %f %f\n", tf_a, tf_b);
   // first pass
   float out[2];
   float o_out[2];
@@ -106,56 +109,26 @@ struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
     weight[5] = nweight[5];
     weight[6] = nweight[6];
     weight[7] = nweight[7];
-  }
-  tuple = {o_out[1], o_out[2]};
-  return(tuple);
+}
+  n = {o_out[1], o_out[2]};
+  return(n);
 }
 
-const char* getfield(char* line, int num) {
-  const char* tok;
-  for (tok = strtok(line, ",");
-    tok && *tok;
-    tok = strtok(NULL, ",\n")) {
-    if (!--num) { 
-      return(tok);
-    }
-  }
-  return(NULL);
-} 
-
-int train() {
-  printf("Training...\n");
-  struct Tuple tuple;
-  for(int train; train < 10; train++) {
-  FILE *stream = fopen("./testdata/blah.csv", "r");
-  char line[1024];
-  float in_a, in_b, out_a, out_b;
-  char *tmp;
-  while (fgets(line, 1024, stream)) {
-    // NOTE strtok clobbers tmp
-    tmp = strdup(line);
-    in_a = atof(getfield(tmp, 3));
-    free(tmp);
-    tmp = strdup(line);
-    in_b = atof(getfield(tmp, 4));
-    free(tmp);
-    tmp = strdup(line);
-    out_a = atof(getfield(tmp, 8));
-    free(tmp);
-    tmp = strdup(line);
-    out_b = atof(getfield(tmp, 9));
-    free(tmp);
-    tuple = network(in_a, in_b, out_a, out_b);
-    printf("%0.2f %0.2f %0.0f %0.0f\n", in_a, in_b, out_a, out_b);
-    }
-  }
-}	
 
 int main() {
-  int ret = train(); 
+  // predict
+  struct Tuple prediction;
+  float pin[1];
+  pin[0] = 1;
+  pin[1] = 0;
+  for(int i; i < 1000; i++) {
+  train_xor();
+  }
+  prediction = network(pin[0], pin[1], 0,0);
+  printf("Prediction: %0.0f %0.0f\n", prediction.out_o_a, prediction.out_o_b);
   printf("Final Weights:\nw1 %f w2 %f w3 %f w4 %f\nw5 %f w6 %f w7 %f w8 %f\n", 
 		  weight[0], weight[1], weight[2], weight[3], weight[4],
 		  weight[5], weight[6], weight[7]);
   printf("Network Error: A: %f  -  B: %f \n", net_err_per[0], net_err_per[1]);
-  return(ret);
+  return(0);
 }
