@@ -16,7 +16,7 @@ void train_xor() {
   n = network(1,0,1,1);
 	  n = network(0,1,1,1);
   n = network(1,1,0,0);
-  printf("Outputs: %0.0f %0.0f\n", n.out_o_a, n.out_o_b);
+//  printf("Outputs: %0.0f %0.0f\n", n.out_o_a, n.out_o_b);
 }
 
 void train_csv() {
@@ -40,7 +40,7 @@ void train_csv() {
       out_b = atof(getfield(tmp, 9));
       free(tmp);
       n = network(in_a, in_b, out_a, out_b);
-      printf("Outputs: %0.0f %0.0f\n", n.out_o_a, n.out_o_b);
+//      printf("Outputs: %0.0f %0.0f\n", n.out_o_a, n.out_o_b);
     }
     fclose(stream);
 }

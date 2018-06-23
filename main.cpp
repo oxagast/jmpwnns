@@ -17,7 +17,7 @@
 #include <string.h>
 
 #define LEARNRATE 0.05
-#define LEARNLOOPS 200
+#define LEARNLOOPS 20000
 
 void train_csv();
 void train_xor();
@@ -45,12 +45,12 @@ struct Tuple {
 
 struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
   struct Tuple n;
-  printf("Trying for: %0.0f %0.0f\n", tt_a, tt_b);
-  printf("Inputs to neurons are: %f %f\n", tf_a, tf_b);
+//  printf("Trying for: %0.0f %0.0f\n", tt_a, tt_b);
+//  printf("Inputs to neurons are: %f %f\n", tf_a, tf_b);
   // first pass
-  float out[2];
-  float o_out[2];
-  for (int ll; ll < LEARNLOOPS; ll++) { // learn loop
+  float out[3];
+  float o_out[3];
+//  for (int ll; ll < LEARNLOOPS; ll++) { // learn loop
     out[1] = sigmoid(calc_it(tf_a, tf_b, weight[0], weight[1], bias_a));
     out[2] = sigmoid(calc_it(tf_a, tf_b, weight[2], weight[3], bias_a));
     // calculate out back through
@@ -69,13 +69,13 @@ struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
     // derrivitive
     der[1] = o_out[1] * (1 - o_out[1]);
     der[2] = o_out[2] * (1 - o_out[2]);
-    float diff[8];
-    float bp[2];
+    float diff[9];
+    float bp[3];
     // delta total
-    float total[2];
+    float total[3];
     total[1] = tar_less_out[1] * der[1] * out[1];
     total[2] = tar_less_out[2] * der[2] * out[2];
-    float nweight[7];
+    float nweight[8];
     // for each weight above 4
     nweight[4] = weight[4] - LEARNRATE * total[1];
     nweight[5] = weight[5] - LEARNRATE * total[1];
@@ -84,12 +84,12 @@ struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
     // start the back prop
     bp[1] = tar_less_out[1] * der[1];
     bp[2] = tar_less_out[2] * der[2];
-    float p[2];
+    float p[3];
     p[1] = bp[1] * weight[4];
     p[2] = bp[2] * weight[4];
     // printf("%f %f %f %f\n", nweight[4], nweight[5], nweight[6], nweight[7]);
-    float hns[2];
-    float hns_p[2];
+    float hns[3];
+    float hns_p[3];
     hns[1] = tar_less_out[1] * der[1];
     hns[2] = tar_less_out[2] * der[2];
     hns_p[1] = hns[1] * weight[4];
@@ -109,7 +109,7 @@ struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
     weight[5] = nweight[5];
     weight[6] = nweight[6];
     weight[7] = nweight[7];
-}
+//}
   n = {o_out[1], o_out[2]};
   return(n);
 }
@@ -118,14 +118,14 @@ struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
 int main() {
   // predict
   struct Tuple prediction;
-  float pin[1];
+  float pin[2];
   pin[0] = 1;
   pin[1] = 0;
-  for(int i; i < 1000; i++) {
-  train_xor();
+  for(int i; i < LEARNLOOPS; i++) {
+    train_xor();
   }
   prediction = network(pin[0], pin[1], 0,0);
-  printf("Prediction: %0.0f %0.0f\n", prediction.out_o_a, prediction.out_o_b);
+  printf("Prediction from %0.0f %0.0f: %0.0f %0.0f\n", pin[0], pin[1], prediction.out_o_a, prediction.out_o_b);
   printf("Final Weights:\nw1 %f w2 %f w3 %f w4 %f\nw5 %f w6 %f w7 %f w8 %f\n", 
 		  weight[0], weight[1], weight[2], weight[3], weight[4],
 		  weight[5], weight[6], weight[7]);
