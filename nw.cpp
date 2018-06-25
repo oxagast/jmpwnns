@@ -21,6 +21,12 @@
 
 void train_csv();
 void train_xor();
+void train_and();
+void train_nand();
+void train_nor();
+void train_or();
+void train_not();
+void train_xnor();
 
 float weight[] = {0.15, 0.20, 0.25, 0.30, 0.40, 0.45, 0.50, 0.55};
 float bias_a = 0.35;
@@ -115,6 +121,17 @@ struct Tuple network(float tf_a, float tf_b, float tt_a, float tt_b) {
 }
 
 
+void reset_weight() {
+  weight[0] = 15;
+  weight[1] = 20;
+  weight[2] = 25;
+  weight[3] = 30;
+  weight[4] = 40;
+  weight[5] = 45;
+  weight[5] = 50;
+  weight[6] = 55;
+}
+
 int main() {
   // predict
   struct Tuple prediction;
@@ -123,9 +140,22 @@ int main() {
   pin[1] = 0;
   for(int i; i < LEARNLOOPS; i++) {
     train_xor();
+    reset_weight();
+    train_and();
+    reset_weight();
+    train_nand();
+    reset_weight();
+    train_or();
+    reset_weight();
+    train_xnor();
+    reset_weight();
+    train_and();
+    reset_weight();
+    train_nor();
   }
   prediction = network(pin[0], pin[1], 0,0);
-  printf("Prediction from %0.0f %0.0f: %0.0f %0.0f\n", pin[0], pin[1], prediction.out_o_a, prediction.out_o_b);
+  printf("Prediction from %0.0f %0.0f: %0.0f %0.0f\n", 
+		  pin[0], pin[1], prediction.out_o_a, prediction.out_o_b);
   printf("Final Weights:\nw1 %f w2 %f w3 %f w4 %f\nw5 %f w6 %f w7 %f w8 %f\n", 
 		  weight[0], weight[1], weight[2], weight[3], weight[4],
 		  weight[5], weight[6], weight[7]);
