@@ -13,11 +13,61 @@ struct Tuple {
 void train_xor() {
   struct Tuple n;
   n = network(0,0,0,0);
-  n = network(1,0,1,1);
-	  n = network(0,1,1,1);
+  n = network(1,0,1,0);
+  n = network(0,1,1,0);
   n = network(1,1,0,0);
 //  printf("Outputs: %0.0f %0.0f\n", n.out_o_a, n.out_o_b);
 }
+
+void train_and() {
+  struct Tuple n;
+  n = network(0,0,0,0);
+  n = network(1,0,0,0);
+  n = network(0,1,0,0);
+  n = network(1,1,1,0);
+//  printf("Outputs: %0.0f %0.0f\n", n.out_o_a, n.out_o_b);
+}
+void train_nor() {
+  struct Tuple n;
+  n = network(0,0,1,0);
+  n = network(1,0,0,0);
+  n = network(0,1,0,0);
+  n = network(1,1,0,0);
+//  printf("Outputs: %0.0f %0.0f\n", n.out_o_a, n.out_o_b);
+}
+void train_or() {
+  struct Tuple n;
+  n = network(0,0,0,0);
+  n = network(1,0,1,0);
+  n = network(0,1,1,0);
+  n = network(1,1,1,0);
+//  printf("Outputs: %0.0f %0.0f\n", n.out_o_a, n.out_o_b);
+}
+void train_nand() {
+  struct Tuple n;
+  n = network(0,0,1,0);
+  n = network(1,0,1,0);
+  n = network(0,1,1,0);
+  n = network(1,1,0,0);
+//  printf("Outputs: %0.0f %0.0f\n", n.out_o_a, n.out_o_b);
+}
+
+void train_not() {
+  struct Tuple n;
+  n = network(0,0,1,0);
+  n = network(1,0,0,0);
+//  printf("Outputs: %0.0f %0.0f\n", n.out_o_a, n.out_o_b);
+}
+
+void train_xnor() {
+  struct Tuple n;
+  n = network(0,0,1,0);
+  n = network(1,0,0,1);
+  n = network(0,1,0,1);
+  n = network(1,1,1,0);
+//  printf("Outputs: %0.0f %0.0f\n", n.out_o_a, n.out_o_b);
+}
+
 
 void train_csv() {
   struct Tuple n;
