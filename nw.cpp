@@ -9,7 +9,7 @@
 //  (  O )  (/    ( (_ /    \___ \ )(
 //   \__(_/\_\_/\_/\___\_/\_(____/(__)
 //
-//  g++ main.cpp -o main -lm
+//  g++ nw.cpp teach.cpp common.cpp -lm -o nn
 
 #include <math.h>
 #include <stdio.h>
@@ -141,17 +141,6 @@ int main() {
   for(int i; i < LEARNLOOPS; i++) {
     train_xor();
     reset_weight();
-    train_and();
-    reset_weight();
-    train_nand();
-    reset_weight();
-    train_or();
-    reset_weight();
-    train_xnor();
-    reset_weight();
-    train_and();
-    reset_weight();
-    train_nor();
   }
   prediction = network(pin[0], pin[1], 0,0);
   printf("Prediction from %0.0f %0.0f: %0.0f %0.0f\n", 
